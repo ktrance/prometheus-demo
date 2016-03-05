@@ -1,0 +1,10 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<counters>
+  <counter name="cpu_total" help="total machine wide cpu" type="gauge" category="Processor" countername="% Processor Time" instance="_Total" perftype="next" />
+  <counter name="gen_0_gc" help="total machine wide GC gen 0" type="gauge" category=".NET CLR Memory" countername="# Gen 0 Collections" instance="_Global_" perftype="next"/>
+  <counter name="gen_1_gc" help="total machine wide GC gen 1" type="gauge" category=".NET CLR Memory" countername="# Gen 1 Collections" instance="_Global_" perftype="next"/>
+  <counter name="gen_2_gc" help="total machine wide GC gen 2" type="gauge" category=".NET CLR Memory" countername="# Gen 2 Collections" instance="_Global_" perftype="next"/>
+  <counter name="gen_0_heap_size" help="total machine wide gen 0 heap size" type="gauge" category=".NET CLR Memory" countername="Gen 0 heap size" instance="_Global_" perftype="sample"/>
+  <counter name="gen_1_heap_size" help="total machine wide gen 1 heap size" type="gauge" category=".NET CLR Memory" countername="Gen 1 heap size" instance="_Global_" perftype="sample"/>
+  <counter name="gen_2_heap_size" help="total machine wide gen 2 heap size" type="gauge" category=".NET CLR Memory" countername="Gen 2 heap size" instance="_Global_" perftype="sample"/>
+</counters>
