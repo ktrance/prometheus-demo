@@ -1,4 +1,5 @@
-﻿using Nancy;
+﻿using CommandLine;
+using Nancy;
 using Nancy.Hosting.Self;
 using Prometheus.Demo.Providers;
 using Prometheus.Demo.Providers.PerformanceCounters;
@@ -6,9 +7,18 @@ using Prometheus.Demo.Providers.Processes;
 using System;
 
 namespace Prometheus.Demo {
-    public class Program {
+    class Program {
+        public static Options Options { get; } = new Options();
+
         static void Main(string[] args) {
-            using (var host = new NancyHost(new HostConfiguration { UrlReservations = new UrlReservations { CreateAutomatically = true } }, new Uri("http://localhost:9999"))) {
+            if (!Parser.Default.ParseArguments(args, Options)) {
+                return;
+            }
+            var url = string.Format("http://localhost:{0}", Options.Port);
+            if (Options.Verbose) {
+                Console.WriteLine("opening listener on {0}", url);
+            }
+            using (var host = new NancyHost(new HostConfiguration { UrlReservations = new UrlReservations { CreateAutomatically = true } }, new Uri(url))) {
                 host.Start();
                 Console.ReadLine();
             }
@@ -19,13 +29,13 @@ namespace Prometheus.Demo {
         private readonly MetricWriter _writer = new MetricWriter();
         private  CompositeMetricProvider _providers;
         public PrometheusModule() {
-            SetupProviders();
+            BuildProviders();
             Get["/metrics"] = _ => { return ServeStats(); };
         }
 
-        private void SetupProviders() {
+        private void BuildProviders() {
             _providers = new CompositeMetricProvider(
-                new PerformanceCounterProviderBuilder().AddFromXml("counters.xml").Build(),
+                new PerformanceCounterProviderBuilder().AddFromXml(Program.Options.Counterfile).Build(),
                 new ProcessMetricProvider(
                     new ProcessCounter { Name = "process_total_cpu_user", Help = "Total milliseconds of user time.", DataFunc = p => p.UserProcessorTime.TotalMilliseconds, Type = MetricType.counter },
                     new ProcessCounter { Name = "process_total_cpu_kernel", Help = "Total milliseconds of kernel time.", DataFunc = p => p.PrivilegedProcessorTime.TotalMilliseconds, Type = MetricType.counter },
@@ -35,7 +45,9 @@ namespace Prometheus.Demo {
         }
 
         private string ServeStats() {
-            Console.WriteLine("{0}: request recieved", DateTime.Now);
+            if (Program.Options.Verbose) {
+                Console.WriteLine("{0}: request recieved", DateTime.Now);
+            }
             _providers.WriteAll(_writer);
             return _writer.Flush();
         }
