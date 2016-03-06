@@ -12,7 +12,7 @@ An open-source service monitoring system and time series database.
 
 Prometheus use a pull mechanism to retrive metrics from nodes. The demo uses [Nancy](http://nancyfx.org/) to open a a port delivering the metrics over the plain text protocol.
 
-The demo will show how to run with one windows box(Nancy does not at this point support CoreClr) running the exporter, and one linux box running the server and [Grafana](http://grafana.org/) as docker containers.
+The demo will show how to run with one windows box running the exporter, and one linux box running the server and [Grafana](http://grafana.org/) as docker containers.
 
 ## How to run
 
